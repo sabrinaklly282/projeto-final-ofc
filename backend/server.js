@@ -132,9 +132,7 @@ app.patch('/perfil', exigirLogin, upload.single('foto'), (req,res) => {
     const bio = req.body.bio || ''
 
     if(nome === '') {
-        return res.status(400).json({
-            erro: 'O nome não pode ficar vazio.'
-        })
+        return res.status(400).json({erro: 'O nome não pode ficar vazio.'})
     }
 
     banco
