@@ -6,6 +6,32 @@ import { URL_API } from '../api.js'
 function Login() {
     const [usuario, setUsuario] = useState('')
     const [senha, setSenha] = useState('')
+    const [erro, setErro] = useState('')
+    const navegar = useNavigate()
+
+    async function entrar(evento) {
+        evento.preventDefault() // impede a página de recarregar
+
+        try {
+            const resposta = await fetch(`${URL_API}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario: usuario, senha: senha }),
+
+            })
+            const dados = await resposta.json()
+
+            if (!resposta.ok) {
+                setErro(dados.erro)
+                return
+            }
+
+            localStorage.setItem('token', dados.token) // guarda o crachá no navegador
+            navegar('/') // vai para o feed
+        } catch {
+            setErro('Não consegui falar com o servidor. Ele está ligado?')
+        }
+    }
 
     return (
         <main className="container">
@@ -18,7 +44,7 @@ function Login() {
                             </h1>
                             <p>Entre para ver as fotos da galera.</p>
 
-                            <form className="d-grid gap-3">
+                            <form onSubmit={entrar} className="d-grid gap-3">
                                 <input
                                     className="form-control"
                                     type="text"
@@ -29,6 +55,7 @@ function Login() {
                                         setUsuario(evento.target.value)
                                     }}
                                 />
+
                                 <input
                                     className="form-control"
                                     type="password"
@@ -39,6 +66,13 @@ function Login() {
                                         setSenha(evento.target.value)
                                     }}
                                 />
+
+                                {erro && (
+                                    <div className="alert theme-danger">
+                                        < TriangleAlert size={18} /> {erro}
+                                    </div>
+                                )}
+
                                 <button className="btn-solid theme-primary" type="submit">
                                     <LogIn size={18} /> Entrar
                                 </button>
