@@ -27,7 +27,7 @@ export async function chamarApi(caminho, metodo = 'GET', corpo) {
         window.location.href = '/login'
     }
 
-    const dados = await resposta.json
+    const dados = await resposta.json()
 
     if(!resposta.ok) {
         throw new Error(dados.erro)
